@@ -17,11 +17,8 @@ def main():
     socket.SOCK_DGRAM:UDP協定 (較常用)
 
     '''
-    
     Flag=True
-    RESULTPATH=input('請輸入接收檔案存放位置:')
-    if not RESULTPATH.endswith('\\'):
-        RESULTPATH=RESULTPATH+'\\'
+    RESULTPATH=input('請輸入接收檔案存放位置:')+'\\'
     print(f'[SETUP] 結果存放目錄:{RESULTPATH}')
     s.bind((HOST,PORT)) #綁定HOST和PORT
     s.listen(2) #最高連線數量設定
@@ -36,22 +33,22 @@ def main():
             if filename=='end':
                 Flag=False
                 print('[SERVER] 伺服端收到停止指令 已關閉')
-                s.close()
                 os.system('PAUSE')
                 break
             print(f'[Client] 傳輸檔案: {filename}')
-            filesize=int(conn.recv(BUFFERSIZE).decode(FORMAT))
-            msg='獲得檔案大小:'+str(filesize)
+            filesize=conn.recv(BUFFERSIZE).decode(FORMAT)
+            msg='獲得檔案大小:'+filesize
             conn.send(msg.encode(FORMAT))
             with open(RESULTPATH+filename,'wb')as f:
-                data=conn.recv(filesize)
+                data=conn.recv(int(filesize))
                 if not data:
                     f.close()
                 f.write(data)
             resultsize=os.path.getsize(RESULTPATH+filename)
             print(f'[SERVER] 傳輸完成。\n原檔案大小:{filesize}\n接收檔案大小:{resultsize}')
-            msg='檔案接收完成!'+filename
+            msg='伺服端完成接收檔案!'+filename
             conn.send(msg.encode(FORMAT))
+            
             
 
 if __name__=='__main__':

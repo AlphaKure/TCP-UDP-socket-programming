@@ -25,18 +25,18 @@ def main():
         filename=os.path.basename(conn)
         print(f'[SERVER] 來自:{addr[0]}:{addr[1]}\n[SERVER] 收到檔案名稱:{filename}')
         filesize=int(s.recv(BUFFERSIZE).decode(FORMAT))
+        print(f'[SERVER] 收到檔案大小: {filesize}')
         try:
             with open(RESULTPATH+filename,'wb')as f:
                 data=s.recv(filesize)
-                print('[Client] 接收資料傳輸中')
                 f.write(data)
                 if not data:
                     f.close()
-            print('[SERVER] 資料傳輸完畢')
-            msg='伺服端資料傳輸完成'
+            print('[SERVER] 檔案傳輸完畢')
+            msg='伺服端檔案傳輸完成'
             s.sendto(msg.encode(FORMAT),addr)
         except:
-            msg='資料傳輸失敗'
+            msg='檔案傳輸失敗'
             s.sendto(msg.encode(FORMAT),addr)
     os.system('PAUSE')
         

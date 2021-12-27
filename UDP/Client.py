@@ -17,23 +17,23 @@ def main():
             os.system('PAUSE')
             Flag=False
             break
-        s.sendto(source.encode(FORMAT),(HOST,PORT))
-        filesize=str(os.path.getsize(source))
-        s.sendto(filesize.encode(FORMAT),(HOST,PORT))
         try:
+            filesize=str(os.path.getsize(source))
+            s.sendto(source.encode(FORMAT),(HOST,PORT))
+            s.sendto(filesize.encode(FORMAT),(HOST,PORT))
             with open(source,'rb')as f:
                 while True:
                     data=f.read()
                     if not data:
+                        f.close()
                         break
                     s.sendto(data,(HOST,PORT))
-
-            f.close()
             print('[Client] 檔案傳輸完成')
             msg=s.recv(BUFFERSIZE).decode(FORMAT)
             print(f'[SERVER] {msg}')
         except:
-            print('[ERROR] 檔案開啟失敗!')
+            print('[ERROR] 檔案開啟失敗或路徑有問題')
+
             
 if __name__=='__main__':
     main()
